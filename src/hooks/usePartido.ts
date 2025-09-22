@@ -5,20 +5,11 @@ import { ScoringService } from '../services/scoringService';
 import { CardService } from '../services/cardService';
 import { TimerService } from '../services/timerService';
 import { StorageService } from '../services/storageService';
+import { ApiService } from '../services/apiService';
 
 export const usePartido = (partidoId?: string) => {
   const [estado, setEstado] = useState<EstadoPartido>(() => {
-    if (partidoId) {
-      const partidoGuardado = StorageService.obtenerPartido(partidoId);
-      if (partidoGuardado) {
-        return {
-          partido: partidoGuardado,
-          temporizadorTarjetas: {}
-        };
-      }
-    }
-
-    // Crear nuevo partido
+    // Crear estado inicial (se cargará desde backend si está disponible)
     const equipoAzul = TeamService.crearEquipo('equipo-azul', 'Equipo Azul', 'AZUL');
     const equipoRojo = TeamService.crearEquipo('equipo-rojo', 'Equipo Rojo', 'ROJO');
 
@@ -44,6 +35,38 @@ export const usePartido = (partidoId?: string) => {
 
   const [intervaloId, setIntervaloId] = useState<NodeJS.Timeout | null>(null);
 
+  // Cargar partido desde el backend si se proporciona un ID
+  useEffect(() => {
+    if (partidoId) {
+      const cargarPartido = async () => {
+        try {
+          // Intentar cargar desde el backend
+          const response = await ApiService.obtenerPartido(partidoId);
+          if (response.success && response.data) {
+            setEstado(prev => ({
+              ...prev,
+              partido: response.data!
+            }));
+            return;
+          }
+        } catch (error) {
+          console.log('Backend no disponible, intentando localStorage');
+        }
+        
+        // Fallback a localStorage
+        const partidoGuardado = StorageService.obtenerPartido(partidoId);
+        if (partidoGuardado) {
+          setEstado(prev => ({
+            ...prev,
+            partido: partidoGuardado
+          }));
+        }
+      };
+      
+      cargarPartido();
+    }
+  }, [partidoId]);
+
   // Función para actualizar el partido
   const actualizarPartido = useCallback((actualizacion: Partial<Partido>) => {
     setEstado(prev => ({
@@ -53,7 +76,19 @@ export const usePartido = (partidoId?: string) => {
   }, []);
 
   // Función para guardar el partido
-  const guardarPartido = useCallback(() => {
+  const guardarPartido = useCallback(async () => {
+    // Intentar guardar en el backend primero
+    try {
+      const success = await ApiService.sincronizarPartido(estado.partido);
+      if (success) {
+        console.log('Partido guardado en el backend');
+        return;
+      }
+    } catch (error) {
+      console.log('Backend no disponible, usando localStorage');
+    }
+    
+    // Fallback a localStorage si el backend no está disponible
     StorageService.guardarPartido(estado.partido);
   }, [estado.partido]);
 
