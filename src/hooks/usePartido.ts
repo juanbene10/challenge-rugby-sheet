@@ -48,18 +48,21 @@ export const usePartido = (partidoId?: string) => {
               partido: response.data!
             }));
             return;
+          } else {
+            console.error('Error al cargar partido desde el backend');
+            throw new Error('Backend no disponible');
           }
         } catch (error) {
-          console.log('Backend no disponible, intentando localStorage');
-        }
-        
-        // Fallback a localStorage
-        const partidoGuardado = StorageService.obtenerPartido(partidoId);
-        if (partidoGuardado) {
-          setEstado(prev => ({
-            ...prev,
-            partido: partidoGuardado
-          }));
+          console.error('Error al cargar desde el backend:', error);
+          // Fallback a localStorage solo si el backend falla
+          const partidoGuardado = StorageService.obtenerPartido(partidoId);
+          if (partidoGuardado) {
+            setEstado(prev => ({
+              ...prev,
+              partido: partidoGuardado
+            }));
+            alert('Error al cargar desde el servidor. Usando datos locales.');
+          }
         }
       };
       
@@ -83,13 +86,16 @@ export const usePartido = (partidoId?: string) => {
       if (success) {
         console.log('Partido guardado en el backend');
         return;
+      } else {
+        console.error('Error al guardar en el backend');
+        throw new Error('Backend no disponible');
       }
     } catch (error) {
-      console.log('Backend no disponible, usando localStorage');
+      console.error('Error al guardar en el backend:', error);
+      // Solo usar localStorage como último recurso
+      StorageService.guardarPartido(estado.partido);
+      throw new Error('Error al guardar en el servidor. Los datos se guardaron localmente.');
     }
-    
-    // Fallback a localStorage si el backend no está disponible
-    StorageService.guardarPartido(estado.partido);
   }, [estado.partido]);
 
   // Función para iniciar/pausar el cronómetro

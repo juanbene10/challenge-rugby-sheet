@@ -4,6 +4,7 @@ import { Timer } from './Timer/Timer';
 import { Scoreboard } from './Scoreboard/Scoreboard';
 import { TeamManagement } from './TeamManagement/TeamManagement';
 import { StorageService } from '../services/storageService';
+import { ApiService } from '../services/apiService';
 import { TimerService } from '../services/timerService';
 import { PdfService } from '../services/pdfService';
 import './App.css';
@@ -28,9 +29,22 @@ function App() {
     // Solicitar permisos de notificación al cargar la app
     TimerService.solicitarPermisoNotificaciones();
     
-    // Cargar partidos guardados
-    const partidos = StorageService.obtenerPartidos();
-    setPartidosGuardados(partidos);
+    // Cargar partidos desde el backend
+    const cargarPartidos = async () => {
+      try {
+        const response = await ApiService.obtenerPartidos();
+        if (response.success && response.data) {
+          setPartidosGuardados(response.data);
+        }
+      } catch (error) {
+        console.error('Error al cargar partidos desde el backend:', error);
+        // Fallback a localStorage solo si el backend falla
+        const partidos = StorageService.obtenerPartidos();
+        setPartidosGuardados(partidos);
+      }
+    };
+    
+    cargarPartidos();
   }, []);
 
   const minutoActual = TimerService.calcularMinutoPartido(partido.tiempoTranscurrido);
@@ -41,11 +55,32 @@ function App() {
     }
   };
 
-  const handleCargarPartido = (partidoId: string) => {
-    const partidoCargado = StorageService.obtenerPartido(partidoId);
-    if (partidoCargado) {
-      actualizarPartido(partidoCargado);
-      setMostrarHistorial(false);
+  const refrescarHistorial = async () => {
+    try {
+      const response = await ApiService.obtenerPartidos();
+      if (response.success && response.data) {
+        setPartidosGuardados(response.data);
+      }
+    } catch (error) {
+      console.error('Error al refrescar historial:', error);
+    }
+  };
+
+  const handleCargarPartido = async (partidoId: string) => {
+    try {
+      const response = await ApiService.obtenerPartido(partidoId);
+      if (response.success && response.data) {
+        actualizarPartido(response.data);
+        setMostrarHistorial(false);
+      }
+    } catch (error) {
+      console.error('Error al cargar partido desde el backend:', error);
+      // Fallback a localStorage
+      const partidoCargado = StorageService.obtenerPartido(partidoId);
+      if (partidoCargado) {
+        actualizarPartido(partidoCargado);
+        setMostrarHistorial(false);
+      }
     }
   };
 
@@ -135,7 +170,16 @@ function App() {
           </button>
           <button 
             className="btn-header"
-            onClick={guardarPartido}
+            onClick={async () => {
+              try {
+                await guardarPartido();
+                await refrescarHistorial();
+                alert('✅ Partido guardado correctamente en el servidor');
+              } catch (error) {
+                console.error('Error al guardar:', error);
+                alert('❌ Error al guardar el partido');
+              }
+            }}
           >
             💾 Guardar
           </button>
