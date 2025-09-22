@@ -1,0 +1,228 @@
+.timer-container {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  color: white;
+  text-align: center;
+}
+
+.timer-container.primer_tiempo {
+  background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+}
+
+.timer-container.descanso {
+  background: linear-gradient(135deg, #8b4513 0%, #cd853f 100%);
+}
+
+.timer-container.segundo_tiempo {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+.timer-container.finalizado {
+  background: linear-gradient(135deg, #2d2d2d 0%, #4a4a4a 100%);
+}
+
+.timer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.timer-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.timer-status {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.status-activo {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.2);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.status-pausado {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.2);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.status-finalizado {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.timer-display {
+  margin: 20px 0;
+}
+
+.timer-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.tiempo-actual {
+  font-size: 3rem;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.tiempo-restante {
+  font-size: 1.2rem;
+  opacity: 0.8;
+  font-family: 'Courier New', monospace;
+}
+
+.timer-progress {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.btn-timer, .btn-next-half, .btn-reset {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-timer {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.btn-timer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-play {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.btn-pause {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.btn-next-half {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+}
+
+.btn-next-half:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.btn-reset {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+}
+
+.btn-reset:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.btn-finish-match {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: white;
+}
+
+.btn-finish-match:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+.timer-info {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.info-label {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.info-value {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .timer-container {
+    padding: 15px;
+  }
+  
+  .tiempo-actual {
+    font-size: 2.5rem;
+  }
+  
+  .timer-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .timer-controls {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .btn-timer, .btn-next-half, .btn-reset {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .timer-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
