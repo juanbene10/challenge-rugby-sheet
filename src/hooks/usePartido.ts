@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Partido, EstadoPartido } from '../types';
+import { Partido, EstadoPartido, Cambio } from '../types';
 import { TeamService } from '../services/teamService';
 import { ScoringService } from '../services/scoringService';
 import { CardService } from '../services/cardService';
