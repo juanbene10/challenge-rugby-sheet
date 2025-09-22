@@ -1,8 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Partido, Equipo, Puntaje, Tarjeta, Cambio } from '../types';
+import { Partido, Equipo } from '../types';
 import { ScoringService } from './scoringService';
-import { CardService } from './cardService';
 import { TimerService } from './timerService';
 
 // Extender jsPDF para incluir autoTable
@@ -387,7 +386,6 @@ export class PdfService {
     yPosition += 15;
 
     // Tarjetas totales
-    const totalTarjetas = partido.tarjetas.length;
     const tarjetasAmarillas = partido.tarjetas.filter(t => t.tipo === 'AMARILLA').length;
     const tarjetasRojas = partido.tarjetas.filter(t => t.tipo === 'ROJA').length;
     doc.text(`Tarjetas: ${tarjetasAmarillas} amarillas, ${tarjetasRojas} rojas`, 20, yPosition);

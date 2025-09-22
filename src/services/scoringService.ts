@@ -1,4 +1,4 @@
-import { Puntaje, Equipo } from '../types';
+import { Puntaje } from '../types';
 
 export class ScoringService {
   static readonly PUNTOS_TRY = 5;

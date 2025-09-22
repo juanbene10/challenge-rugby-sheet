@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Partido, Equipo, Puntaje, Tarjeta, Cambio, EstadoPartido } from '../types';
+import { Partido, EstadoPartido } from '../types';
 import { TeamService } from '../services/teamService';
 import { ScoringService } from '../services/scoringService';
 import { CardService } from '../services/cardService';
@@ -116,7 +116,7 @@ export const usePartido = (partidoId?: string) => {
       setIntervaloId(nuevoIntervalo);
       actualizarPartido({ pausado: false });
     }
-  }, [intervaloId, estado.partido.finalizado, estado.partido.primerTiempo, actualizarPartido]);
+  }, [intervaloId, estado.partido.finalizado, actualizarPartido]);
 
   // Función para agregar puntos
   const agregarPuntaje = useCallback((equipoId: string, tipo: 'TRY' | 'CONVERSION' | 'PENAL', jugadorId?: string) => {
